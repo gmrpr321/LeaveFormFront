@@ -1,9 +1,14 @@
 import { MakeRequest } from "../makeRequest/MakeRequest";
 import CreateLeaveForm from "../CreateLeaveForm/CreateLeaveForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StudentFormList from "../StudentFormList/StudentFormList";
 export default function StudentLandingPage(props) {
+  const [refresh, setIsRefresh] = useState(false);
   const [data, setData] = useState([]);
+  const [isShowForms, setIsShowForms] = useState(false);
+  useEffect(() => {
+    getLeaveFormData();
+  }, [refresh]);
   function getLeaveFormData() {
     MakeRequest(
       "http://127.0.0.1:8000/LeaveOD/RetriveStudentFormsById/" +
@@ -23,12 +28,32 @@ export default function StudentLandingPage(props) {
       props.changeIsLogin(false);
     });
   }
+  console.log(data);
   return (
     <div>
       <button onClick={() => handleLogout()}>Logout</button>
-      <CreateLeaveForm username={props.username}></CreateLeaveForm>;
-      <button onClick={getLeaveFormData}>CLick to get Student Form Data</button>
-      {data.length > 0 && <StudentFormList FormData={data}></StudentFormList>}
+      <button
+        onClick={() => {
+          getLeaveFormData();
+          setIsShowForms(true);
+          console.log("yes");
+        }}
+      >
+        CLick to get Student Form Data
+      </button>
+      {!isShowForms && (
+        <CreateLeaveForm username={props.username}></CreateLeaveForm>
+      )}
+      {data.length > 0 && isShowForms && (
+        <div>
+          <button onClick={setIsShowForms.bind(self, false)}>back</button>
+          <StudentFormList
+            FormData={data}
+            setIsRefresh={setIsRefresh}
+            is_staff={false}
+          ></StudentFormList>
+        </div>
+      )}
     </div>
   );
 }

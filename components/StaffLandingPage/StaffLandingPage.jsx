@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { MakeRequest } from "../makeRequest/MakeRequest";
 import StudentFormList from "../StudentFormList/StudentFormList";
+import classes from "../StaffLandingPage/StaffLandingPage.module.css";
 // props {is_staff,is_hod,username}
 
 function getDateRange() {
@@ -24,9 +25,9 @@ export default function StaffLandingPage(props) {
   const [mentorStudentData, setMentorStudentData] = useState([]);
   const [classInchargeStudentData, setclassInchargeStudentData] = useState([]);
   const [HODStudentData, setHODStudentData] = useState([]);
+  const [refresh, setIsRefresh] = useState(false);
   function getStudentData(position) {
     const dateRange = getDateRange();
-    console.log(dateRange)
     if (position === "class_incharge") {
       MakeRequest(
         "http://127.0.0.1:8000/LeaveOD/RetriveStudentFormsForClassIncharge/" +
@@ -81,33 +82,65 @@ export default function StaffLandingPage(props) {
     }
   }
   useEffect(() => {
+    console.log("refreshed");
     if (props.is_hod) {
       getStudentData("HOD");
     } else {
       getStudentData("class_Incharge");
       getStudentData("mentor");
     }
-  }, []);
+  }, [refresh]);
   function handleLogout() {
     MakeRequest("http://127.0.0.1:8000/LeaveOD/Logout/", {}, "GET").then(() => {
       props.changeIsLogin(false);
     });
   }
   return (
-    <div>
-      <button onClick={() => handleLogout()}>Logout</button>
+    <div className={classes.container}>
+      <button onClick={() => handleLogout()} className={classes.logoutButton}>
+        Logout
+      </button>
 
       {props.is_hod && (
-        <StudentFormList FormData={HODStudentData}></StudentFormList>
+        <StudentFormList
+          FormData={HODStudentData}
+          is_hod={props.is_hod}
+          is_staff={props.is_staff}
+          className={classes.studentFormList}
+          setIsRefresh={setIsRefresh}
+        />
       )}
       {!props.is_hod && (
-        <div>
-          Class Incharge Data
-          <StudentFormList
-            FormData={classInchargeStudentData}
-          ></StudentFormList>
-          Mentor Data
-          <StudentFormList FormData={mentorStudentData}></StudentFormList>
+        <div className={classes.dataContainer}>
+          {classInchargeStudentData.length !== 0 && (
+            <div>
+              <div className={classes.dataHeading}>
+                <h2>Class Incharge Data</h2>
+              </div>
+              <StudentFormList
+                FormData={classInchargeStudentData}
+                is_hod={props.is_hod}
+                is_staff={props.is_staff}
+                className={classes.studentFormList}
+                setIsRefresh={setIsRefresh}
+              />
+            </div>
+          )}
+
+          {mentorStudentData.length && (
+            <div>
+              <div className={classes.dataHeading}>
+                <h2>Mentor Data</h2>
+              </div>
+              <StudentFormList
+                FormData={mentorStudentData}
+                is_hod={props.is_hod}
+                is_staff={props.is_staff}
+                className={classes.studentFormList}
+                setIsRefresh={setIsRefresh}
+              />
+            </div>
+          )}
         </div>
       )}
     </div>

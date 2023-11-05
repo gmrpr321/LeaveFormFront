@@ -1,0 +1,29 @@
+.container {
+  padding: 20px;
+  margin-left: 100px;
+}
+
+.logoutButton {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.dataContainer {
+  margin: 20px 0;
+}
+
+.dataHeading {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.studentFormList {
+  /* Add styles specific to the StudentFormList component here */
+}

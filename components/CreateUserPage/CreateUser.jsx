@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MakeRequest } from "../makeRequest/MakeRequest";
+import classes from "../CreateUserPage/CreateUser.module.css";
 export default function CreateUser(props) {
   const [formData, setFormData] = useState({
     username: "",
@@ -24,6 +25,24 @@ export default function CreateUser(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(formData);
+    if (formData.is_hod) {
+      formData.is_staff = true;
+    }
+    if (formData.class_incharge_username === "")
+      setFormData((prev) => {
+        delete prev.class_incharge_username;
+        return prev;
+      });
+    if (formData.mentor_username === "")
+      setFormData((prev) => {
+        delete prev.mentor_username;
+        return prev;
+      });
+    if (formData.HOD_username === "")
+      setFormData((prev) => {
+        delete prev.HOD_username;
+        return prev;
+      });
     MakeRequest("http://127.0.0.1:8000/LeaveOD/CreateUser/", formData, "POST")
       .then((response) => {
         console.log(response);
@@ -34,94 +53,108 @@ export default function CreateUser(props) {
   };
 
   return (
-    <div>
+    <div className={classes.formContainer}>
       <h1>Create User</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className={classes.formElements}>
         <div>
-          <label>Username:</label>
+          <label className={classes.formLabel}>Username</label>
           <input
             type="text"
             name="username"
             value={formData.username}
             onChange={handleChange}
+            className={classes.formInput}
             required
           />
         </div>
         <div>
-          <label>Password:</label>
+          <label className={classes.formLabel}>Password</label>
           <input
             type="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
+            className={classes.formInput}
             required
           />
         </div>
         <div>
-          <label>Confirm Password:</label>
+          <label className={classes.formLabel}>Confirm Password</label>
           <input
             type="password"
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleChange}
+            className={classes.formInput}
             required
           />
         </div>
+
         <div>
-          <label>Date of Joining:</label>
-          <input
-            type="date"
-            name="date_of_joining"
-            value={formData.date_of_joining}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label>Is Staff:</label>
-          <input
-            type="checkbox"
-            name="is_staff"
-            checked={formData.is_staff}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label>Is HOD:</label>
-          <input
-            type="checkbox"
-            name="is_hod"
-            checked={formData.is_hod}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label>Mentor Username:</label>
+          <label className={classes.formLabel}>Mentor Username</label>
           <input
             type="text"
             name="mentor_username"
             value={formData.mentor_username}
             onChange={handleChange}
+            className={classes.formInput}
           />
         </div>
         <div>
-          <label>Class Incharge Username:</label>
+          <label className={classes.formLabel}>Class Incharge Username</label>
           <input
             type="text"
             name="class_incharge_username"
             value={formData.class_incharge_username}
             onChange={handleChange}
+            className={classes.formInput}
           />
         </div>
         <div>
-          <label>HOD Username:</label>
+          <label className={classes.formLabel}>HOD Username</label>
           <input
             type="text"
             name="HOD_username"
             value={formData.HOD_username}
             onChange={handleChange}
+            className={classes.formInput}
           />
         </div>
-        <button type="submit">Submit</button>
+        <div>
+          <label className={classes.formLabel}>Date of Joining</label>
+          <input
+            type="date"
+            name="date_of_joining"
+            value={formData.date_of_joining}
+            onChange={handleChange}
+            className={classes.formInput}
+          />
+        </div>
+        <div>
+          <div className={classes.labels}>
+            <label className={classes.checkboxLabel}>
+              Is Staff
+              <input
+                type="checkbox"
+                name="is_staff"
+                checked={formData.is_staff}
+                onChange={handleChange}
+              />
+            </label>
+            <label className={classes.checkboxLabel}>
+              Is HOD
+              <input
+                type="checkbox"
+                name="is_hod"
+                checked={formData.is_hod}
+                onChange={handleChange}
+              />
+            </label>
+          </div>
+        </div>
+        <button type="submit" className={classes.submitButton}>
+          Submit
+        </button>
       </form>
     </div>
   );
